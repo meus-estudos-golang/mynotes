@@ -1,0 +1,23 @@
+{{define "base"}}
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <title>{{template "title" .}} - MyNotes</title>
+</head>
+<body>
+    <header>
+        <h1><a href="/">MyNotes</a></h1>
+    </header>
+    {{template "menu" .}}
+    <main>
+        {{template "main" .}}
+    </main>
+    <footer>
+        Feito por <a target="_blank" href="https://github.com/paulojunior-ufla/">Paulo Júnior</a>
+    </footer>
+</body>
+
+</html>
+{{end}}
