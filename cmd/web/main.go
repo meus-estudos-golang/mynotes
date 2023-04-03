@@ -8,11 +8,13 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/pauloa.junior/mynotes/internal/models"
 )
 
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	notes    *models.NoteRepository
 }
 
 func main() {
@@ -32,6 +34,7 @@ func main() {
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
+		notes:    &models.NoteRepository{DB: db},
 	}
 
 	srv := &http.Server{

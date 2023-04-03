@@ -48,5 +48,15 @@ func (app *application) noteCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	title := "Outras"
+	content := "Pagar contas"
+
+	id, err := app.notes.Insert(title, content)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.infoLog.Printf("Nota criada com o ID = %d", id)
 	w.Write([]byte("Create a new note"))
 }
