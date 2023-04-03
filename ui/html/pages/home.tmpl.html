@@ -13,7 +13,7 @@
             {{range .Notes}}
                 <tr>
                     <td><a href='/note/view?id={{.ID}}'>{{.Title}}</a></td>
-                    <td>{{.Created}}</td>
+                    <td>{{.Created.Format "02 Jan 2006 at 15:04"}}</td>
                     <td>#{{.ID}}</td>
                 </tr>
             {{end}}
