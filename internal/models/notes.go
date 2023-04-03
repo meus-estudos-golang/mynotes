@@ -50,5 +50,28 @@ func (r *NoteRepository) GetById(id int) (*Note, error) {
 }
 
 func (r *NoteRepository) GetAll() ([]*Note, error) {
-	return nil, nil
+	stmt := "SELECT id, title, content, created FROM notes ORDER BY id DESC"
+
+	rows, err := r.DB.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	notes := []*Note{}
+
+	for rows.Next() {
+		n := &Note{}
+		err = rows.Scan(&n.ID, &n.Title, &n.Content, &n.Created)
+		if err != nil {
+			return nil, err
+		}
+		notes = append(notes, n)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return notes, nil
 }

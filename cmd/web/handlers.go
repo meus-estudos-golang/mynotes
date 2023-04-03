@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"text/template"
 
 	"github.com/pauloa.junior/mynotes/internal/models"
 )
@@ -16,22 +15,32 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := []string{
-		"./ui/html/pages/base.tmpl.html",
-		"./ui/html/components/menu.tmpl.html",
-		"./ui/html/pages/home.tmpl.html",
-	}
-
-	ts, err := template.ParseFiles(files...)
+	notes, err := app.notes.GetAll()
 	if err != nil {
 		app.serverError(w, err)
 		return
 	}
 
-	err = ts.ExecuteTemplate(w, "base", nil)
-	if err != nil {
-		app.serverError(w, err)
+	for _, n := range notes {
+		fmt.Fprintf(w, "%+v", n)
 	}
+
+	// files := []string{
+	// 	"./ui/html/pages/base.tmpl.html",
+	// 	"./ui/html/components/menu.tmpl.html",
+	// 	"./ui/html/pages/home.tmpl.html",
+	// }
+
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// 	return
+	// }
+
+	// err = ts.ExecuteTemplate(w, "base", nil)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// }
 }
 
 func (app *application) noteView(w http.ResponseWriter, r *http.Request) {
