@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -21,26 +20,9 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := []string{
-		"./ui/html/pages/base.tmpl.html",
-		"./ui/html/components/menu.tmpl.html",
-		"./ui/html/pages/home.tmpl.html",
-	}
-
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	data := templateData{
+	app.render(w, http.StatusOK, "home.tmpl.html", &templateData{
 		Notes: notes,
-	}
-
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	})
 }
 
 func (app *application) noteView(w http.ResponseWriter, r *http.Request) {
@@ -60,26 +42,9 @@ func (app *application) noteView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := []string{
-		"./ui/html/pages/base.tmpl.html",
-		"./ui/html/components/menu.tmpl.html",
-		"./ui/html/pages/view.tmpl.html",
-	}
-
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	data := &templateData{
+	app.render(w, http.StatusOK, "view.tmpl.html", &templateData{
 		Note: note,
-	}
-
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	})
 }
 
 func (app *application) noteCreate(w http.ResponseWriter, r *http.Request) {
