@@ -1,10 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
 	"text/template"
+
+	"github.com/pauloa.junior/mynotes/internal/models"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +41,17 @@ func (app *application) noteView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Display a specific note with ID %d", id)
+	note, err := app.notes.GetById(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.clientError(w, http.StatusNotFound)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	fmt.Fprintf(w, "%+v", note)
 }
 
 func (app *application) noteCreate(w http.ResponseWriter, r *http.Request) {

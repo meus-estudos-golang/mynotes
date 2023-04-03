@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 )
 
@@ -33,7 +34,19 @@ func (r *NoteRepository) Insert(title, content string) (int, error) {
 }
 
 func (r *NoteRepository) GetById(id int) (*Note, error) {
-	return nil, nil
+	stmt := "SELECT id, title, content, created FROM notes WHERE id = ?"
+
+	n := &Note{}
+	err := r.DB.QueryRow(stmt, id).Scan(&n.ID, &n.Title, &n.Content, &n.Created)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrNoRecord
+		} else {
+			return nil, err
+		}
+	}
+
+	return n, nil
 }
 
 func (r *NoteRepository) GetAll() ([]*Note, error) {
