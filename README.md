@@ -1,7 +1,7 @@
 # MyNotes
 Uma aplicação simples para gerenciamento de notas pessoais.
 
-## Instalação
+## Configuração da base de dados
 
 Instale e configure o [Docker](https://docs.docker.com/engine/install/ubuntu/) em seu sistema operacional. Depois, execute o comando abaixo para criar um *container* com o SGBD MySQL instalado:
 
@@ -33,4 +33,15 @@ INSERT INTO notes (title, content, created) VALUES ('Supermercado', 'Presunto\nR
 INSERT INTO notes (title, content, created) VALUES ('Para o final de semana', 'Lavar o carro\nCortar grama', UTC_TIMESTAMP());
 INSERT INTO notes (title, content, created) VALUES ('Filmes que quero assitir', 'John Wick 3', UTC_TIMESTAMP());
 ```
+
+## Execução da aplicação
+
+Para executar a aplicação, use o comando:
+
+`go run ./cmd/web`
+
+A aplicação estará exeuctando em [http://localhost:4000/](http://localhost:4000/)
+
+Enjoy!
+
 
