@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -60,7 +61,22 @@ func (app *application) noteView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "%+v", note)
+	files := []string{
+		"./ui/html/pages/base.tmpl.html",
+		"./ui/html/components/menu.tmpl.html",
+		"./ui/html/pages/view.tmpl.html",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	err = ts.ExecuteTemplate(w, "base", note)
+	if err != nil {
+		app.serverError(w, err)
+	}
 }
 
 func (app *application) noteCreate(w http.ResponseWriter, r *http.Request) {
