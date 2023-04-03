@@ -2,17 +2,21 @@
 
 {{define "main"}}
 
-<div class="snippet">
-    <div class="metadata">
-        <strong>{{.Note.Title}}</strong>
-        <span>#{{.Note.ID}}</span>
+    {{with .Note}}
+
+    <div class="snippet">
+        <div class="metadata">
+            <strong>{{.Title}}</strong>
+            <span>#{{.ID}}</span>
+        </div>
+
+        <pre><code>{{.Content}}</code></pre>
+
+        <div class="metadata">
+            <time>Created: {{.Created}}</time>
+        </div>
     </div>
 
-    <pre><code>{{.Note.Content}}</code></pre>
-
-    <div class="metadata">
-        <time>Created: {{.Note.Created}}</time>
-    </div>
-</div>
+    {{end}}
 
 {{end}}
