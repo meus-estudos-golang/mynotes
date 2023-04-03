@@ -2,5 +2,24 @@
 
 {{define "main"}}
     <h2>Últimas anotações</h2>
-    <p>Não há anotações ainda!</p>
+
+    {{if .Notes}}
+        <table>
+            <tr>
+                <th>Título</th>
+                <th>Data</th>
+                <th>ID</th>
+            </tr>
+            {{range .Notes}}
+                <tr>
+                    <td><a href='/note/view?id={{.ID}}'>{{.Title}}</a></td>
+                    <td>{{.Created}}</td>
+                    <td>#{{.ID}}</td>
+                </tr>
+            {{end}}
+        </table>
+    {{else}}
+        <p>Não há anotações ainda!</p>
+    {{end}}
+
 {{end}}
