@@ -11,6 +11,7 @@ type templateData struct {
 	CurrentYear int
 	Note        *models.Note
 	Notes       []*models.Note
+	Form        any
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {

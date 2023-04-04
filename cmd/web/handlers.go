@@ -12,6 +12,12 @@ import (
 	"github.com/pauloa.junior/mynotes/internal/models"
 )
 
+type noteCreateFormData struct {
+	Title       string
+	Content     string
+	FieldErrors map[string]string
+}
+
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	notes, err := app.notes.GetAll()
 	if err != nil {
@@ -52,6 +58,7 @@ func (app *application) noteView(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) noteCreateForm(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
+	data.Form = noteCreateFormData{}
 
 	app.render(w, http.StatusOK, "create.tmpl.html", data)
 }
@@ -63,22 +70,26 @@ func (app *application) noteCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	title := r.PostForm.Get("title")
-	content := r.PostForm.Get("content")
-
-	fieldErrors := map[string]string{}
-	if strings.TrimSpace(title) == "" {
-		fieldErrors["title"] = "This field cannot be blank"
-	} else if utf8.RuneCountInString(title) > 50 {
-		fieldErrors["title"] = "This field cannot be more than 50 characters long"
+	form := noteCreateFormData{
+		Title:       r.PostForm.Get("title"),
+		Content:     r.PostForm.Get("content"),
+		FieldErrors: map[string]string{},
 	}
 
-	if len(fieldErrors) > 0 {
-		fmt.Fprint(w, fieldErrors)
+	if strings.TrimSpace(form.Title) == "" {
+		form.FieldErrors["title"] = "This field cannot be blank"
+	} else if utf8.RuneCountInString(form.Title) > 50 {
+		form.FieldErrors["title"] = "This field cannot be more than 50 characters long"
+	}
+
+	if len(form.FieldErrors) > 0 {
+		data := app.newTemplateData(r)
+		data.Form = form
+		app.render(w, http.StatusUnprocessableEntity, "create.tmpl.html", data)
 		return
 	}
 
-	id, err := app.notes.Insert(title, content)
+	id, err := app.notes.Insert(form.Title, form.Content)
 	if err != nil {
 		app.serverError(w, err)
 		return
