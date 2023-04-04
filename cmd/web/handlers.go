@@ -5,17 +5,16 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
-	"unicode/utf8"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/pauloa.junior/mynotes/internal/models"
+	"github.com/pauloa.junior/mynotes/internal/validator"
 )
 
 type noteCreateFormData struct {
-	Title       string
-	Content     string
-	FieldErrors map[string]string
+	Title   string
+	Content string
+	validator.Validator
 }
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -71,18 +70,14 @@ func (app *application) noteCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	form := noteCreateFormData{
-		Title:       r.PostForm.Get("title"),
-		Content:     r.PostForm.Get("content"),
-		FieldErrors: map[string]string{},
+		Title:   r.PostForm.Get("title"),
+		Content: r.PostForm.Get("content"),
 	}
 
-	if strings.TrimSpace(form.Title) == "" {
-		form.FieldErrors["title"] = "This field cannot be blank"
-	} else if utf8.RuneCountInString(form.Title) > 50 {
-		form.FieldErrors["title"] = "This field cannot be more than 50 characters long"
-	}
+	form.CheckField(validator.NotBlank(form.Title), "title", "This field cannot be blank")
+	form.CheckField(validator.MaxChars(form.Title, 50), "title", "This field cannot be more than 50 characters long")
 
-	if len(form.FieldErrors) > 0 {
+	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
 		app.render(w, http.StatusUnprocessableEntity, "create.tmpl.html", data)
