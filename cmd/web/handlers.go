@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -54,8 +55,14 @@ func (app *application) noteCreateForm(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) noteCreate(w http.ResponseWriter, r *http.Request) {
-	title := "Outras"
-	content := "Pagar contas"
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	title := r.PostForm.Get("title")
+	content := r.PostForm.Get("content")
 
 	id, err := app.notes.Insert(title, content)
 	if err != nil {
@@ -63,6 +70,5 @@ func (app *application) noteCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.infoLog.Printf("Nota criada com o ID = %d", id)
-	w.Write([]byte("Create a new note"))
+	http.Redirect(w, r, fmt.Sprintf("/note/view/%d", id), http.StatusSeeOther)
 }
