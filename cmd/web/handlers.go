@@ -48,7 +48,9 @@ func (app *application) noteView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) noteCreateForm(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Display note create form"))
+	data := app.newTemplateData(r)
+
+	app.render(w, http.StatusOK, "create.tmpl.html", data)
 }
 
 func (app *application) noteCreate(w http.ResponseWriter, r *http.Request) {

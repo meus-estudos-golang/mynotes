@@ -1,13 +1,13 @@
 {{define "title"}}Home - MyNotes{{end}}
 
 {{define "main"}}
-    <h2>Últimas anotações</h2>
+    <h2>Latest notes:</h2>
 
     {{if .Notes}}
         <table>
             <tr>
-                <th>Título</th>
-                <th>Data</th>
+                <th>Title</th>
+                <th>Created</th>
                 <th>ID</th>
             </tr>
             {{range .Notes}}
@@ -19,7 +19,7 @@
             {{end}}
         </table>
     {{else}}
-        <p>Não há anotações ainda!</p>
+        <p>Without notes yet!</p>
     {{end}}
 
 {{end}}
