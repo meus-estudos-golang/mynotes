@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
+	"unicode/utf8"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/pauloa.junior/mynotes/internal/models"
@@ -63,6 +65,18 @@ func (app *application) noteCreate(w http.ResponseWriter, r *http.Request) {
 
 	title := r.PostForm.Get("title")
 	content := r.PostForm.Get("content")
+
+	fieldErrors := map[string]string{}
+	if strings.TrimSpace(title) == "" {
+		fieldErrors["title"] = "This field cannot be blank"
+	} else if utf8.RuneCountInString(title) > 50 {
+		fieldErrors["title"] = "This field cannot be more than 50 characters long"
+	}
+
+	if len(fieldErrors) > 0 {
+		fmt.Fprint(w, fieldErrors)
+		return
+	}
 
 	id, err := app.notes.Insert(title, content)
 	if err != nil {
