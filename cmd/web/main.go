@@ -7,16 +7,20 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/alexedwards/scs/mysqlstore"
+	"github.com/alexedwards/scs/v2"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/pauloa.junior/mynotes/internal/models"
 )
 
 type application struct {
-	errorLog      *log.Logger
-	infoLog       *log.Logger
-	notes         *models.NoteRepository
-	templateCache map[string]*template.Template
+	errorLog       *log.Logger
+	infoLog        *log.Logger
+	notes          *models.NoteRepository
+	templateCache  map[string]*template.Template
+	sessionManager *scs.SessionManager
 }
 
 func main() {
@@ -38,11 +42,16 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
+	sessionManager := scs.New()
+	sessionManager.Store = mysqlstore.New(db)
+	sessionManager.Lifetime = 12 * time.Hour
+
 	app := &application{
-		errorLog:      errorLog,
-		infoLog:       infoLog,
-		notes:         &models.NoteRepository{DB: db},
-		templateCache: templateCache,
+		errorLog:       errorLog,
+		infoLog:        infoLog,
+		notes:          &models.NoteRepository{DB: db},
+		templateCache:  templateCache,
+		sessionManager: sessionManager,
 	}
 
 	srv := &http.Server{

@@ -12,6 +12,7 @@ type templateData struct {
 	Note        *models.Note
 	Notes       []*models.Note
 	Form        any
+	Flash       string
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {

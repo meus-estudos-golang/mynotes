@@ -90,5 +90,7 @@ func (app *application) noteCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	app.sessionManager.Put(r.Context(), "flash", "Note successfully created!")
+
 	http.Redirect(w, r, fmt.Sprintf("/note/view/%d", id), http.StatusSeeOther)
 }
