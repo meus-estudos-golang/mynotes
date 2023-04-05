@@ -28,13 +28,25 @@ CREATE TABLE sessions (token CHAR(43) PRIMARY KEY, data BLOB NOT NULL, expiry TI
 CREATE INDEX sessions_expiry_idx ON sessions (expiry);
 ```
 
-Por fim, popule a base de dados com algumas informações prévias, utilizando os comandos SQL abaixo:
+Agora, você deve popular a base de dados com algumas informações prévias, utilizando os comandos SQL abaixo:
 
 ```sql
 INSERT INTO notes (title, content, created) VALUES ('Supermercado', 'Presunto\nRequeijão', UTC_TIMESTAMP());
 INSERT INTO notes (title, content, created) VALUES ('Para o final de semana', 'Lavar o carro\nCortar grama', UTC_TIMESTAMP());
 INSERT INTO notes (title, content, created) VALUES ('Filmes que quero assitir', 'John Wick 3', UTC_TIMESTAMP());
 ```
+
+Para que aplicação funcione corretamente, crie um certificado auto-assinado, com a ferramenta `generate_cert.go`. Para isso, crie um diretório na raiz do projeto, denominado `tls`:
+
+```
+mkdir tls
+cd tls
+```
+
+Por fim, execute o comando abaixo:
+
+`go run /usr/local/go/src/crypto/tls/generate_cert.go --rsa-bits=2048 --host=localhost`
+
 
 ## Execução da aplicação
 
