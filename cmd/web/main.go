@@ -19,6 +19,7 @@ type application struct {
 	errorLog       *log.Logger
 	infoLog        *log.Logger
 	notes          *models.NoteRepository
+	users          *models.UserRepository
 	templateCache  map[string]*template.Template
 	sessionManager *scs.SessionManager
 }
@@ -51,6 +52,7 @@ func main() {
 		errorLog:       errorLog,
 		infoLog:        infoLog,
 		notes:          &models.NoteRepository{DB: db},
+		users:          &models.UserRepository{DB: db},
 		templateCache:  templateCache,
 		sessionManager: sessionManager,
 	}
