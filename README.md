@@ -26,6 +26,8 @@ CREATE TABLE notes (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, title VARCHA
 CREATE INDEX idx_notes_created ON notes(created);
 CREATE TABLE sessions (token CHAR(43) PRIMARY KEY, data BLOB NOT NULL, expiry TIMESTAMP(6) NOT NULL);
 CREATE INDEX sessions_expiry_idx ON sessions (expiry);
+CREATE TABLE users (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,name VARCHAR(255) NOT NULL,email VARCHAR(255) NOT NULL,hashed_password CHAR(60) NOT NULL,created DATETIME NOT NULL);
+ALTER TABLE users ADD CONSTRAINT users_uc_email UNIQUE (email);
 ```
 
 Agora, você deve popular a base de dados com algumas informações prévias, utilizando os comandos SQL abaixo:
