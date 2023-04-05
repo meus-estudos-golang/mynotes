@@ -1,8 +1,22 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/pauloa.junior/mynotes/internal/validator"
+)
+
+type userSignupFormData struct {
+	Name  string
+	Email string
+	validator.Validator
+}
 
 func (app *application) userSignupForm(w http.ResponseWriter, r *http.Request) {
+	data := app.newTemplateData(r)
+	data.Form = userSignupFormData{}
+	app.render(w, http.StatusOK, "signup.tmpl.html", data)
+
 	w.Write([]byte("Display user signup form"))
 }
 
