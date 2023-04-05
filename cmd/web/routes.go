@@ -19,10 +19,18 @@ func (app *application) routes() http.Handler {
 
 	dynamic := alice.New(app.sessionManager.LoadAndSave)
 
+	// Routes for notes management
 	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
 	router.Handler(http.MethodGet, "/note/view/:id", dynamic.ThenFunc(app.noteView))
 	router.Handler(http.MethodGet, "/note/create", dynamic.ThenFunc(app.noteCreateForm))
 	router.Handler(http.MethodPost, "/note/create", dynamic.ThenFunc(app.noteCreate))
+
+	// Routes for users management
+	router.Handler(http.MethodGet, "/user/signup", dynamic.ThenFunc(app.userSignupForm))
+	router.Handler(http.MethodPost, "/user/signup", dynamic.ThenFunc(app.userSignup))
+	router.Handler(http.MethodGet, "/user/login", dynamic.ThenFunc(app.userLoginForm))
+	router.Handler(http.MethodPost, "/user/login", dynamic.ThenFunc(app.userLogin))
+	router.Handler(http.MethodPost, "/user/logout", dynamic.ThenFunc(app.userLogout))
 
 	standard := alice.New(app.recoverPanic, app.logRequests, secureHeaders)
 
