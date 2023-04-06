@@ -7,8 +7,9 @@ import (
 )
 
 type userSignupFormData struct {
-	Name  string
-	Email string
+	Name     string
+	Email    string
+	Password string
 	validator.Validator
 }
 
@@ -21,6 +22,31 @@ func (app *application) userSignupForm(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) userSignup(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	form := userSignupFormData{
+		Name:     r.PostForm.Get("name"),
+		Email:    r.PostForm.Get("email"),
+		Password: r.PostForm.Get("password"),
+	}
+
+	form.CheckField(validator.NotBlank(form.Name), "name", "This field cannot be blank")
+	form.CheckField(validator.NotBlank(form.Email), "email", "This field cannot be blank")
+	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "This field must be a valid email")
+	form.CheckField(validator.NotBlank(form.Password), "password", "This field cannot be blank")
+	form.CheckField(validator.MinChars(form.Password, 8), "password", "This field must be at least 8 characters long")
+
+	if !form.Valid() {
+		data := app.newTemplateData(r)
+		data.Form = form
+		app.render(w, http.StatusUnprocessableEntity, "signup.tmpl.html", data)
+		return
+	}
+
 	w.Write([]byte("Create a new user"))
 }
 
