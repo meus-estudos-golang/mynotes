@@ -74,5 +74,11 @@ func (r *UserRepository) Authenticate(email, password string) (int, error) {
 }
 
 func (r *UserRepository) Exists(id int) (bool, error) {
-	return false, nil
+	var exists bool
+
+	stmt := "SELECT EXISTS(SELECT true FROM users WHERE id = ?)"
+
+	err := r.DB.QueryRow(stmt, id).Scan(&exists)
+
+	return exists, err
 }
