@@ -18,11 +18,17 @@ type User struct {
 	Created        time.Time
 }
 
-type UserRepository struct {
+type UserRepository interface {
+	Insert(name, email, password string) error
+	Authenticate(email, password string) (int, error)
+	Exists(id int) (bool, error)
+}
+
+type PSQLUserRepository struct {
 	DB *sql.DB
 }
 
-func (r *UserRepository) Insert(name, email, password string) error {
+func (r *PSQLUserRepository) Insert(name, email, password string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	if err != nil {
 		return err
@@ -46,7 +52,7 @@ func (r *UserRepository) Insert(name, email, password string) error {
 	return nil
 }
 
-func (r *UserRepository) Authenticate(email, password string) (int, error) {
+func (r *PSQLUserRepository) Authenticate(email, password string) (int, error) {
 	var id int
 	var hashedPassword []byte
 
@@ -73,7 +79,7 @@ func (r *UserRepository) Authenticate(email, password string) (int, error) {
 	return id, nil
 }
 
-func (r *UserRepository) Exists(id int) (bool, error) {
+func (r *PSQLUserRepository) Exists(id int) (bool, error) {
 	var exists bool
 
 	stmt := "SELECT EXISTS(SELECT true FROM users WHERE id = ?)"

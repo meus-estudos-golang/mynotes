@@ -13,11 +13,17 @@ type Note struct {
 	Created time.Time
 }
 
-type NoteRepository struct {
+type NoteRepository interface {
+	Insert(title, content string) (int, error)
+	GetById(id int) (*Note, error)
+	GetAll() ([]*Note, error)
+}
+
+type PSQLNoteRepository struct {
 	DB *sql.DB
 }
 
-func (r *NoteRepository) Insert(title, content string) (int, error) {
+func (r *PSQLNoteRepository) Insert(title, content string) (int, error) {
 	stmt := "INSERT INTO notes (title, content, created) VALUES (?, ?, UTC_TIMESTAMP())"
 
 	result, err := r.DB.Exec(stmt, title, content)
@@ -33,7 +39,7 @@ func (r *NoteRepository) Insert(title, content string) (int, error) {
 	return int(id), nil
 }
 
-func (r *NoteRepository) GetById(id int) (*Note, error) {
+func (r *PSQLNoteRepository) GetById(id int) (*Note, error) {
 	stmt := "SELECT id, title, content, created FROM notes WHERE id = ?"
 
 	n := &Note{}
@@ -49,7 +55,7 @@ func (r *NoteRepository) GetById(id int) (*Note, error) {
 	return n, nil
 }
 
-func (r *NoteRepository) GetAll() ([]*Note, error) {
+func (r *PSQLNoteRepository) GetAll() ([]*Note, error) {
 	stmt := "SELECT id, title, content, created FROM notes ORDER BY id DESC"
 
 	rows, err := r.DB.Query(stmt)

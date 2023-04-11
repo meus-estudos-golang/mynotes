@@ -18,8 +18,8 @@ import (
 type application struct {
 	errorLog       *log.Logger
 	infoLog        *log.Logger
-	notes          *models.NoteRepository
-	users          *models.UserRepository
+	notes          models.NoteRepository
+	users          models.UserRepository
 	templateCache  map[string]*template.Template
 	sessionManager *scs.SessionManager
 }
@@ -51,8 +51,8 @@ func main() {
 	app := &application{
 		errorLog:       errorLog,
 		infoLog:        infoLog,
-		notes:          &models.NoteRepository{DB: db},
-		users:          &models.UserRepository{DB: db},
+		notes:          &models.PSQLNoteRepository{DB: db},
+		users:          &models.PSQLUserRepository{DB: db},
 		templateCache:  templateCache,
 		sessionManager: sessionManager,
 	}
