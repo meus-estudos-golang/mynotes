@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ func newTestApplication(t *testing.T) *application {
 	sessionManager.Cookie.Secure = true
 
 	return &application{
-		errorLog:       log.New(io.Discard, "", 0),
+		errorLog:       log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile),
 		infoLog:        log.New(io.Discard, "", 0),
 		notes:          &mocks.FakeNoteRepository{},
 		users:          &mocks.FakeUserRepository{},
